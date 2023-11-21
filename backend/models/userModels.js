@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const todoSchema = require("./toDoModels");
 
 const userSchema = mongoose.Schema(
   {
@@ -14,7 +15,7 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add a password"],
     },
-    toDo: [String],
+    toDo: [todoSchema],
   },
   {
     timestamps: true,

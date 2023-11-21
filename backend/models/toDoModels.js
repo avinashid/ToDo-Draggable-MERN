@@ -25,4 +25,4 @@ const todoSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("ToDo", todoSchema);
+module.exports = todoSchema;

@@ -1,17 +1,28 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchToDo } from "./middleware/toDoMiddleware";
-
+import { updateToDo } from "./middleware/toDoMiddleware";
 const initialState = {
   isLoading: true,
   toDo: [],
 };
 
 export const toDoSlice = createSlice({
-  name: "post",
+  name: "toDo",
   initialState,
   reducers: {
     reOrderList: (state, action) => {
       state.toDo = action.payload;
+      updateToDo(action.payload);
+    },
+    markToDo: (state, action) => {
+      state.isLoading = true;
+      const todo = state.toDo.map((e) => {
+        if (action.payload === e._id) return { ...e, markToDo: !e.markToDo };
+        return { ...e };
+      });
+      state.toDo = todo;
+      updateToDo(todo);
+      state.isLoading = false;
     },
   },
   extraReducers: (builder) => {
@@ -21,6 +32,6 @@ export const toDoSlice = createSlice({
     });
   },
 });
-export const { reOrderList } = toDoSlice.actions;
+export const { reOrderList, markToDo } = toDoSlice.actions;
 
 export default toDoSlice.reducer;

@@ -9,24 +9,19 @@ const ToDoContainer = () => {
   const dispatch = useDispatch();
   const onDragEnd = (result) => {
     if (!result.destination) return;
-
-    // Reorder the items in the state
+    
     const reorderedItems = Array.from(toDo.toDo);
     const [removed] = reorderedItems.splice(result.source.index, 1);
     reorderedItems.splice(result.destination.index, 0, removed);
-    
+
     dispatch(reOrderList(reorderedItems));
   };
-  const data = !toDo.isLoading
-    ? toDo.toDo.map((e, index, array) => (
-        <ToDo key={e._id} toDo={array[array.length - 1 - index]} />
-      ))
-    : "";
+
   return (
     <div className="flex flex-col gap-2">
       <CreateToDo />
 
-      {!toDo.isLoading && toDo.toDo.length && (
+      {!toDo.isLoading && toDo.toDo.length !==0 && (
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="list">
             {(provided) => (
@@ -43,7 +38,7 @@ const ToDoContainer = () => {
                         {...provided.dragHandleProps}
                         ref={provided.innerRef}
                       >
-                        {item.toDo}
+                        <ToDo key={item._id} toDo={item} />
                       </li>
                     )}
                   </Draggable>

@@ -1,11 +1,25 @@
-const ToDo = require("../models/toDoModels");
 const ToDoUser = require("../models/userModels");
 
 const getToDo = async (req, res) => {
-  const {username} = req.body;
+  const { username } = req.body;
   if (!username) return res.status(400).json("username not found");
   try {
-    const todo = await ToDo.find({ username });
+    const todo = await ToDoUser.findOne({ username });
+    res.status(200).json(todo.toDo);
+  } catch (error) {
+    res.status(501).json({ Error: error.message });
+  }
+};
+
+const updateToDo = async (req, res) => {
+  const { username, toDo } = req.body;
+  if (!username) return res.status(400).json("username not found");
+  try {
+    const todo = await ToDoUser.findOne({
+      username,
+    });
+    todo.toDo = toDo;
+    await todo.save();
     res.status(200).json(todo);
   } catch (error) {
     res.status(501).json({ Error: error.message });
@@ -17,20 +31,15 @@ const addToDo = async (req, res) => {
     const { username, title, toDo, markToDo } = req.body;
     if (!username || !toDo)
       return res.status(400).json({ message: "not enough data" });
-    const toDoData = await ToDo.create({
+    const toDoData = await ToDoUser.findOne({ username });
+    toDoData.toDo.push({
       username,
-      title: title || "",
+      title,
       toDo,
       markToDo: false,
     });
-    if (toDoData) {
-      const updateToDoUser = await ToDoUser.findOne({
-        username,
-      });
-      updateToDoUser.toDo.push(toDoData._id);
-      const response = await updateToDoUser.save();
-      res.status(200).json(toDoData);
-    }
+    await toDoData.save();
+    res.status(200).json(toDoData.toDo);
   } catch (error) {
     res.status(501).json({ error: error.message });
   }
@@ -39,8 +48,8 @@ const addToDo = async (req, res) => {
 const markToDo = async (req, res) => {
   const toDoId = req.body;
   if (!toDoId) return res.status(400).json("mess", "toDoId not found");
-  const updateMark = await ToDo.findOne({
-    _id: toDoId,
+  const updateMark = await ToDoUser.findOne({
+    toDo: { _id: toDoId },
   });
   const mark = updateMark.markToDo;
   updateMark.markToDo = !mark;
@@ -74,4 +83,5 @@ module.exports = {
   addToDo,
   markToDo,
   deleteToDo,
+  updateToDo,
 };

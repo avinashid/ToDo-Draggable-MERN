@@ -2,7 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
-export const fetchToDo = createAsyncThunk("posts/me", async () => {
+
+const fetchToDo = createAsyncThunk("toDo/me", async () => {
   const token = Cookies.get("toDoUserToken");
   if (!token) return { isLoading: false, toDo: [] };
 
@@ -39,3 +40,35 @@ export const fetchToDo = createAsyncThunk("posts/me", async () => {
     return toDo;
   }
 });
+
+const updateToDo = async (newToDo) => {
+  console.log("update todo");
+  const token = Cookies.get("toDoUserToken");
+  if (!token) return console.log("No access");
+  try {
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+    const res = await axios.get("http://localhost:5000/api/users/me", {
+      headers,
+    });
+
+    const userData = res.data;
+
+    if (userData.username) {
+      const response = await axios.post(
+        "http://localhost:5000/api/toDo/updateToDo",
+        {
+          username: userData.username,
+          toDo: newToDo,
+        },
+        { headers }
+      );
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export { updateToDo, fetchToDo };

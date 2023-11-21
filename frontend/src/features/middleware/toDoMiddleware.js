@@ -4,8 +4,7 @@ import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
 export const fetchToDo = createAsyncThunk("posts/me", async () => {
   const token = Cookies.get("toDoUserToken");
-  if (!token)
-    return { isLoading: false, toDo: Cookies.get("toDoUserData") || [] };
+  if (!token) return { isLoading: false, toDo: [] };
 
   const toDo = {
     isLoading: false,
@@ -32,7 +31,7 @@ export const fetchToDo = createAsyncThunk("posts/me", async () => {
       const data = response.data;
       return {
         isLoading: false,
-        toDo: data,
+        toDo: data || [],
       };
     }
   } catch (error) {

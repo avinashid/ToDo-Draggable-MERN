@@ -1,9 +1,6 @@
-import { useSelector } from "react-redux";
 import Header from "../components/Header";
 import { Outlet } from "react-router-dom";
 const Homepage = () => {
-  const user = useSelector((state) => state);
-  console.log(user);
   return (
     <div>
       <Header />

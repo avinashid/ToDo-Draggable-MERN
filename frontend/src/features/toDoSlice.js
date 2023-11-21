@@ -9,7 +9,11 @@ const initialState = {
 export const toDoSlice = createSlice({
   name: "post",
   initialState,
-  reducers: {},
+  reducers: {
+    reOrderList: (state, action) => {
+      state.toDo = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchToDo.fulfilled, (state, action) => {
       state.isLoading = action.payload.isLoading;
@@ -17,5 +21,6 @@ export const toDoSlice = createSlice({
     });
   },
 });
+export const { reOrderList } = toDoSlice.actions;
 
 export default toDoSlice.reducer;

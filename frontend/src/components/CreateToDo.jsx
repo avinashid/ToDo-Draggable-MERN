@@ -27,10 +27,10 @@ const CreateToDo = () => {
         },
         { headers }
       );
-      Cookies.set("toDoUserData", res);
-      console.log(Cookies.get("toDoUseData"));
-      setErr("")
-      setTextArea("")
+      // Cookies.set("toDoUserData", res);
+      // console.log(Cookies.get("toDoUseData"));
+      setErr("");
+      setTextArea("");
       dispatch(fetchToDo());
     } catch (error) {
       console.log(error);

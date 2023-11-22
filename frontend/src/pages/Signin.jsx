@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { fetchUser } from "../features/middleware/userMiddleware";
+import { fetchToDo } from "../features/middleware/toDoMiddleware";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ const SignUp = () => {
       const data = res.data;
       Cookies.set("toDoUserToken", data.token, { expires: 2 });
       dispatch(fetchUser());
+      dispatch(fetchToDo())
       navigate("/");
     } catch (error) {
       setErr(true);

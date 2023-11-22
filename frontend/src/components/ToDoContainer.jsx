@@ -37,6 +37,7 @@ const ToDoContainer = () => {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                         ref={provided.innerRef}
+                        className="flex flex-col mb-3"
                       >
                         <ToDo key={item._id} toDo={item} />
                       </li>

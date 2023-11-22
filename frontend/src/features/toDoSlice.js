@@ -1,10 +1,13 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { fetchToDo } from "./middleware/toDoMiddleware";
+import Cookies from "js-cookie";
 import { updateToDo } from "./middleware/toDoMiddleware";
 const initialState = {
   isLoading: true,
   toDo: [],
 };
+
+const offline = !Cookies.get("toDoUserToken") ? true : false;
 
 export const toDoSlice = createSlice({
   name: "toDo",
@@ -12,7 +15,9 @@ export const toDoSlice = createSlice({
   reducers: {
     reOrderList: (state, action) => {
       state.toDo = action.payload;
-      updateToDo(action.payload);
+      offline
+        ? Cookies.set("toDoUserData", JSON.stringify(action.payload))
+        : updateToDo(action.payload);
     },
     markToDo: (state, action) => {
       state.isLoading = true;
@@ -21,7 +26,18 @@ export const toDoSlice = createSlice({
         return { ...e };
       });
       state.toDo = todo;
-      updateToDo(todo);
+      offline
+        ? Cookies.set("toDoUserData", JSON.stringify(todo))
+        : updateToDo(todo);
+      state.isLoading = false;
+    },
+    deleteToDo: (state, action) => {
+      state.isLoading = true;
+      const todo = state.toDo.filter((e) => e._id !== action.payload);
+      state.toDo = todo;
+      offline
+        ? Cookies.set("toDoUserData", JSON.stringify(todo))
+        : updateToDo(todo);
       state.isLoading = false;
     },
   },
@@ -32,6 +48,6 @@ export const toDoSlice = createSlice({
     });
   },
 });
-export const { reOrderList, markToDo } = toDoSlice.actions;
+export const { reOrderList, markToDo, deleteToDo } = toDoSlice.actions;
 
 export default toDoSlice.reducer;

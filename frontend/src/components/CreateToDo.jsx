@@ -4,15 +4,36 @@ import ToDo from "./ToDo";
 import { fetchToDo } from "../features/middleware/toDoMiddleware";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { nanoid } from "@reduxjs/toolkit";
 
 const CreateToDo = () => {
   const [textArea, setTextArea] = useState("");
   const user = useSelector((state) => state.user);
   const [err, setErr] = useState("");
   const dispatch = useDispatch();
+
   const handleToDo = async (e) => {
     e.preventDefault();
-    if (!user.isLoggedIn) return "";
+    if (!user.isLoggedIn) {
+      const cookie = Cookies.get("toDoUserData");
+      const data = cookie ? JSON.parse(cookie) : [];
+      const offline = [
+        {
+          username: user.username,
+          title: "",
+          toDo: textArea,
+          markToDo: false,
+          _id: nanoid(),
+          updatedAt: new Date(),
+          createdAt: new Date(),
+        },
+      ];
+      const copy = offline.concat(data);
+      Cookies.set("toDoUserData", JSON.stringify(copy));
+      dispatch(fetchToDo());
+      setTextArea("");
+      return;
+    }
     const headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${user.token}`,
@@ -27,8 +48,6 @@ const CreateToDo = () => {
         },
         { headers }
       );
-      // Cookies.set("toDoUserData", res);
-      // console.log(Cookies.get("toDoUseData"));
       setErr("");
       setTextArea("");
       dispatch(fetchToDo());
@@ -37,7 +56,7 @@ const CreateToDo = () => {
     }
   };
   return (
-    <div className="p-4 border rounded flex gap-4 w-screen max-w-sm flex-col">
+    <div className="p-4 border rounded flex flex-1 gap-4 w-screen max-w-sm flex-col">
       <div className="">Create a New Todo</div>
       <div className="text-lg text-clight">{user.username}</div>
       <form className="flex flex-col gap-4" onSubmit={handleToDo}>

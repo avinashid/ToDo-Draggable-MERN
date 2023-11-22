@@ -8,6 +8,7 @@ import ErrorPage from "./pages/ErrorPage";
 import Homepage from "./pages/Homepage";
 import { fetchUser } from "./features/middleware/userMiddleware";
 import { fetchToDo } from "./features/middleware/toDoMiddleware";
+import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 
 const router = createBrowserRouter([
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
 const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
+    // Cookies.set("toDoUserData", "");
     dispatch(fetchUser());
     dispatch(fetchToDo());
   }, []);

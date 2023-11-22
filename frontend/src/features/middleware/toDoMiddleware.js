@@ -5,7 +5,14 @@ import Cookies from "js-cookie";
 
 const fetchToDo = createAsyncThunk("toDo/me", async () => {
   const token = Cookies.get("toDoUserToken");
-  if (!token) return { isLoading: false, toDo: [] };
+  if (!token) {
+    const cookie = Cookies.get("toDoUserData");
+    const data = cookie ? JSON.parse(cookie) : [];
+    return {
+      isLoading: false,
+      toDo: data,
+    };
+  }
 
   const toDo = {
     isLoading: false,
@@ -42,7 +49,6 @@ const fetchToDo = createAsyncThunk("toDo/me", async () => {
 });
 
 const updateToDo = async (newToDo) => {
-  console.log("update todo");
   const token = Cookies.get("toDoUserToken");
   if (!token) return console.log("No access");
   try {

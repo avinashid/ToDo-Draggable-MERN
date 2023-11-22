@@ -4,15 +4,15 @@ import axios from "axios";
 
 export const fetchUser = createAsyncThunk("users/me", async () => {
   const token = Cookies.get("toDoUserToken");
-  console.log(token)
   const user = {
     name: "",
     username: "",
-    token: "notoken",
+    token: "",
     isLoggedIn: false,
     isLoading: false,
+    _id: "",
   };
-
+  if (!token) return user;
   try {
     const response = await axios.get("http://localhost:5000/api/users/me", {
       headers: {
@@ -28,15 +28,17 @@ export const fetchUser = createAsyncThunk("users/me", async () => {
       token,
       isLoggedIn: true,
       isLoading: false,
+      _id: data._id,
     };
   } catch (error) {
     console.log("error", error);
     return {
       name: "",
-      username:"",
-      token:"",
+      username: "",
+      token: "",
       isLoggedIn: false,
       isLoading: false,
+      _id: "",
     };
   }
 });

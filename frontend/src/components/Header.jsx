@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { fetchUser } from "../features/middleware/userMiddleware";
+import { fetchToDo } from "../features/middleware/toDoMiddleware";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -10,11 +11,10 @@ const Header = () => {
 
   const user = useSelector((state) => state.user);
 
-  console.log(user);
-
   const handleSignOut = () => {
     Cookies.set("toDoUserToken", "");
     dispatch(fetchUser());
+    dispatch(fetchToDo());
   };
   const button = user.isLoggedIn ? (
     <div onClick={handleSignOut}>Sign Out</div>
